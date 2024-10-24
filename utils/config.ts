@@ -1,6 +1,6 @@
 import { configTypes } from "./types";
 
-export const api = "http://localhost:5000/api";
+export const api = "https://backendtms-0e856cbefd47.herokuapp.com/api";
 
 export const requestConfig = (method: string, data: BodyInit | null | undefined | object, token: string | null = null, image: boolean = false): object => {
 
