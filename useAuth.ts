@@ -1,25 +1,50 @@
-import { RootState } from "./strore";
-import { useState, useEffect } from "react";
-import { useSelector } from "https://cdn.skypack.dev/react-redux";
+import { useState, useEffect } from 'react'
+import { store } from './store'
 
-export const useAuth = () => {
-  const { user, error } = useSelector((state:RootState) => state.auth);
+interface User {
+  _id: string;
+  token: string;
+}
 
-  console.log(error);
-  
+interface AuthState {
+  auth: {
+    user: User | null;
+    loading: boolean;
+  }
+}
 
-  const [auth, setAuth] = useState(false);
-  const [loading, setLoading] = useState(true);
+export function withFramerAuth(Component: React.ComponentType) {
+  return function AuthWrapped(props: any) {
+    const [authState, setAuthState] = useState({
+      user: null,
+      loading: true
+    });
 
-  useEffect(() => {
-    if (user) {
-      setAuth(true);
-    } else {
-      setAuth(false);
+    useEffect(() => {
+      // Inscrever-se nas mudanças do store
+      const unsubscribe = store.subscribe(() => {
+        const state = store.getState() as AuthState;
+        setAuthState({
+          user: state.auth.user,
+          loading: state.auth.loading
+        });
+      });
+
+      // Carregar estado inicial
+      const state = store.getState() as AuthState;
+      setAuthState({
+        user: state.auth.user,
+        loading: state.auth.loading
+      });
+
+      return () => unsubscribe();
+    }, []);
+
+    // Você pode adicionar sua lógica de proteção de rota aqui
+    if (authState.loading) {
+      return <div>Loading...</div>;
     }
 
-    setLoading(false);
-  }, [user]);
-
-  return { auth, loading };
-};
+    return <Component {...props} auth={authState} />;
+  }
+}
