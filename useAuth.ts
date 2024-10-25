@@ -41,10 +41,7 @@ export function withFramerAuth(Component: React.ComponentType) {
     }, []);
 
     // Você pode adicionar sua lógica de proteção de rota aqui
-    if (authState.loading) {
-      return <div>Loading...</div>;
-    }
 
-    return <Component {...props} auth={authState} />;
+    return { authState };
   }
 }
