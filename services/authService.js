@@ -1,4 +1,4 @@
-import { api, requestConfig } from "../utils/config";
+import { api, requestConfig } from "../utils/config.js";
 
 // Register a user
 const register = async (data) => {
