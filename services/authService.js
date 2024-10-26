@@ -1,8 +1,7 @@
-import { userLogin, userRegister } from "../slices/types.ts";
-import { api, requestConfig } from "../utils/config.ts";
+import { api, requestConfig } from "../utils/config";
 
 // Register a user
-const register = async (data: userRegister) => {
+const register = async (data) => {
   const config = requestConfig("POST", data);
 
   try {
@@ -26,7 +25,7 @@ const logout = () => {
 };
 
 // Sign in a user
-const login = async (data: userLogin) => {
+const login = async (data) => {
   const config = requestConfig("POST", data);
 
   try {
