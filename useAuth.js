@@ -1,23 +1,31 @@
 import { useState, useEffect } from "react";
+import {store} from './store.js'
 import { useSelector } from "https://cdn.skypack.dev/react-redux@7.2.3";
 
 export const useAuth = () => {
-  const { user, error } = useSelector((state) => state.auth);
-
-  console.log(error);
-
-  const [auth, setAuth] = useState(false);
-  const [loading, setLoading] = useState(true);
-
+  const [authState, setAuthState] = useState({
+      user: null,
+      loading: true
+    });
   useEffect(() => {
-    if (user) {
-      setAuth(true);
-    } else {
-      setAuth(false);
-    }
+      // Inscrever-se nas mudanças do store
+      const unsubscribe = store.subscribe(() => {
+        const state = store.getState() as AuthState;
+        setAuthState({
+          user: state.auth.user && true,
+          loading: false
+        });
+      });
 
-    setLoading(false);
-  }, [user]);
+      // Carregar estado inicial
+      const state = store.getState() as AuthState;
+      setAuthState({
+        user: state.auth.user && true,
+        loading: false
+      });
 
-  return { auth, loading };
+      return () => unsubscribe();
+    }, []);
+
+  return { auth: authState.user, loading: authState.loading };
 };
