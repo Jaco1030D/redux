@@ -1,38 +1,23 @@
-import { useState, useEffect } from 'react';
-import { store } from './store';
+import { useState, useEffect } from "react";
+import { useSelector } from "https://cdn.skypack.dev/react-redux";
 
-export function withFramerAuth(Component) {
-  return function AuthWrapped(props) {
-    const [authState, setAuthState] = useState({
-      user: null,
-      loading: true
-    });
+export const useAuth = () => {
+  const { user, error } = useSelector((state) => state.auth);
 
-    useEffect(() => {
-      // Inscrever-se nas mudanças do store
-      const unsubscribe = store.subscribe(() => {
-        const state = store.getState();
-        setAuthState({
-          user: state.auth.user,
-          loading: state.auth.loading
-        });
-      });
+  console.log(error);
 
-      // Carregar estado inicial
-      const state = store.getState();
-      setAuthState({
-        user: state.auth.user,
-        loading: state.auth.loading
-      });
+  const [auth, setAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-      return () => unsubscribe();
-    }, []);
-
-    // Lógica de proteção de rota
-    if (authState.loading) {
-      return <div>Loading...</div>;
+  useEffect(() => {
+    if (user) {
+      setAuth(true);
+    } else {
+      setAuth(false);
     }
 
-    return <Component {...props} auth={authState} />;
-  };
-}
+    setLoading(false);
+  }, [user]);
+
+  return { auth, loading };
+};
