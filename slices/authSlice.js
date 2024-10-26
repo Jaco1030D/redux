@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "https://cdn.skypack.dev/@reduxjs/toolkit";
-import authService from "../services/authService";
+import authService from "../services/authService.js";
 
 const userData = localStorage.getItem("user");
 let user = null;
